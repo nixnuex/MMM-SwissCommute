@@ -224,15 +224,26 @@ Module.register("MMM-SwissCommute",{
 			for (var i = 0, count = data.connections.length; i < count; i++) {
 				var trains = data.connections[i];
 
-				this.trains.push({
-					departureTimestampRaw: trains.departure,
-					departureTimestamp: moment(trains.departure).format("HH:mm"),
-					delay: parseInt(trains.dep_delay),
-					to: trains.legs[0].terminal,
-					number: trains.legs[0].line,
-					track: trains.legs[0].track,
-					trackChange: trains.legs[0].track.indexOf("!") > 0
-				});
+				if("departure" in trains.legs[0] && "terminal" in trains.legs[0] && "line" in trains.legs[0]) {
+					var conn = {
+						departureTimestampRaw: trains.departure,
+						departureTimestamp: moment(trains.departure).format("HH:mm"),
+						delay: parseInt(trains.dep_delay),
+						to: trains.legs[0].terminal,
+						number: trains.legs[0].line,
+						track: trains.legs[0].track
+					};
+				
+					if (typeof conn.track != 'undefined') {
+						conn.trackChange = conn.track.indexOf("!") > 0;
+					}
+					else {
+						conn.track = "";
+						conn.trackChange = 0;
+					}
+								
+					this.trains.push(conn);
+				}
 			}
 		}
 		else {
