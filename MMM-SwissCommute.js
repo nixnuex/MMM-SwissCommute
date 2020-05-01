@@ -84,7 +84,7 @@ Module.register("MMM-SwissCommute",{
 		}
 		
 		if (!this.loaded) {
-			wrapper.innerHTML = "Loading trains ...";
+			wrapper.innerHTML = "Loading connections ...";
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
@@ -104,9 +104,33 @@ Module.register("MMM-SwissCommute",{
 			var row = document.createElement("tr");
 			table.appendChild(row);
 
-			// Number
+			// Number & Icon
+            var icon = "";
+            switch(trains.type) {
+                case "train":
+                    icon = "fa-train";
+                    break;
+                case "strain":
+                    icon = "fa-train";
+                    break;
+                case "bus":
+                    icon = "fa-bus";
+                    break;
+                case "tram":
+                    icon = "fa-subway";
+                    break;
+                case "ship":
+                    icon = "fa-ship";
+                    break;
+                case "cableway":
+                    icon = "fa-tram";
+                    break;
+                default:
+                icon = "fa-train";
+            }
+
 			var trainNumberCell = document.createElement("td");
-			trainNumberCell.innerHTML = "<i class=\"fa fa-train\"></i> " + trains.number;
+			trainNumberCell.innerHTML = "<i class=\"fa " + icon + "\"></i> " + trains.number;
 			trainNumberCell.className = "align-left";
 			row.appendChild(trainNumberCell);
 
@@ -230,6 +254,7 @@ Module.register("MMM-SwissCommute",{
 						departureTimestamp: moment(trains.departure).format("HH:mm"),
 						delay: parseInt(trains.dep_delay),
 						to: trains.legs[0].terminal,
+						type: trains.legs[0].type,
 						number: trains.legs[0].line,
 						track: trains.legs[0].track
 					};

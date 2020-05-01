@@ -1,6 +1,6 @@
 {
   "name": "MMM-SwissCommute",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A MagicMirror Module to display the next departures for your favorite (train) connection in Switzerland",
   "main": "MMM-SwissCommute.js",
   "author": "nixnuex",
