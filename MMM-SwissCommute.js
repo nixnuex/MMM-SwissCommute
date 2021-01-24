@@ -14,8 +14,8 @@ Module.register("MMM-SwissCommute",{
 	defaults: {
 		updateInterval: 2 * 60 * 1000, // Update every 2 minutes. Note: search.ch API limit is 1000 requests per day
 		animationSpeed: 2000,
-		fade: true,
-		fadePoint: 0.25, // Start on 1/4th of the list.
+		fade: false,
+		fadePoint: 0.5, // Start on 1/4th of the list.
         initialLoadDelay: 0, // start delay seconds.
 
         domRefresh: 1000 * 30, // Refresh Dom each 30 s
@@ -108,31 +108,83 @@ Module.register("MMM-SwissCommute",{
             var icon = "";
             switch(trains.type) {
                 case "train":
-                    icon = "fa-train";
+                    icon = "icon2-zug";
                     break;
                 case "strain":
-                    icon = "fa-train";
+                    icon = "icon2-zug";
                     break;
                 case "bus":
-                    icon = "fa-bus";
+                    icon = "icon2-bus";
+                    break;
+                case "post":
+                    icon = "icon2-bus";
                     break;
                 case "tram":
-                    icon = "fa-subway";
+                    icon = "icon2-tram";
                     break;
                 case "ship":
                     icon = "fa-ship";
                     break;
                 case "cableway":
-                    icon = "fa-tram";
+                    icon = "icon2-cc";
                     break;
+				case "funicular":
+					icon = "icon2-cc";
+					  break;
                 default:
-                icon = "fa-train";
+                icon = "icon2-zug";
             }
 
 			var trainNumberCell = document.createElement("td");
-			trainNumberCell.innerHTML = "<i class=\"fa " + icon + "\"></i> " + trains.number;
-			trainNumberCell.className = "align-left";
+			trainNumberCell.innerHTML = "&nbsp; <i class=\"fa " + icon + "\"></i> " + trains.number;
+			trainNumberCell.className = "type align-left border linie" + trains.number;
 			row.appendChild(trainNumberCell);
+			
+			var trainNumber2Cell = document.createElement("td");
+			trainNumber2Cell.innerHTML = ""
+			trainNumber2Cell.className = "traintodist";
+			row.appendChild(trainNumber2Cell);
+			
+			// Effektive Abfahrt, ab +3' in rot
+			var departureCell = document.createElement("td");
+			if((trains.delay > 0) && (trains.delay <= 2)) {
+			var departure = moment(trains.departureTimestampRaw).add(trains.delay, 'm').format("HH:mm")
+			departureCell.className = "departure";
+			departureCell.innerHTML = departure;
+			} else if(trains.delay > 2.1) {
+			var departure = moment(trains.departureTimestampRaw).add(trains.delay, 'm').format("HH:mm")
+			departureCell.className = "departure red";
+			departureCell.innerHTML = departure;
+			} else {
+			departureCell.className = "departure";
+			departureCell.innerHTML = trains.departureTimestamp;
+			}
+			row.appendChild(departureCell);
+
+			// Time
+			// var dTime = moment(trains.departureTimestampRaw);
+		//	var diff = dTime.diff(currentTime, 'minutes');
+//
+	//		var depCell = document.createElement("td");
+	//		depCell.className = "align-left departuretime";
+	//		depCell.innerHTML = trains.departureTimestamp;
+//
+	//		if (diff <= this.config.minWalkingTime ){
+	//			row.className = "red";
+	//		}
+//
+	//		row.appendChild(depCell);
+//
+	//		// Delay
+          //  var delayCell = document.createElement("td");
+ //           if(trains.delay > 0) {
+//                delayCell.className = "delay red";
+//                delayCell.innerHTML = "+" + trains.delay + " min";
+//            } else {
+//              delayCell.className = "delay red";
+//                delayCell.innerHTML = ""; //trains.delay;
+//            }
+ //           row.appendChild(delayCell);
 
 			// Direction
 			var trainToCell = document.createElement("td");
@@ -140,38 +192,45 @@ Module.register("MMM-SwissCommute",{
 			trainToCell.className = "align-left trainto";
 			row.appendChild(trainToCell);
 
-			// Time
-			var dTime = moment(trains.departureTimestampRaw);
-			var diff = dTime.diff(currentTime, 'minutes');
-
-			var depCell = document.createElement("td");
-			depCell.className = "align-left departuretime";
-			depCell.innerHTML = trains.departureTimestamp;
-
-			if (diff <= this.config.minWalkingTime ){
-				row.className = "red";
-			}
-
-			row.appendChild(depCell);
-
-			// Delay
-            var delayCell = document.createElement("td");
-            if(trains.delay > 0) {
-                delayCell.className = "delay red";
-                delayCell.innerHTML = "+" + trains.delay + " min";
-            } else {
-                delayCell.className = "delay red";
-                delayCell.innerHTML = ""; //trains.delay;
-            }
-            row.appendChild(delayCell);
+			
             
             // Track
             if (!this.config.hideTrackInfo) {
 	            var trackCell = document.createElement("td");
     	        trackCell.innerHTML = trains.track;
-        	    if(trains.trackChange) trackCell.className = "track red";
+				trackCell.className = "align-right track";
+        	    if(trains.trackChange) trackCell.className = "align-right track red";
             	row.appendChild(trackCell);
             }
+           
+           // Infozeile Ankunft und 166
+           //var information2row = document.createElement("tr");
+			//var information2Cell = document.createElement("td");
+			//information2Cell.colSpan = 5;
+			//information2Cell.innerHTML = "<i class=\"fa fa-clock\"></i> Ankunft: " + moment(trains.arrivalTimestampRaw).add(trains.arrivaldelay, 'm').format("HH:mm") ;
+			//information2Cell.className = "align-left infozeile";
+			//information2row.appendChild(information2Cell);
+			//table.appendChild(information2row);
+           
+           // Infozeile bei Abfahrt ab anderer Station (mit Wegzeit) 
+            var informationrow = document.createElement("tr");
+			var informationCell = document.createElement("td");
+			informationCell.colSpan = 5;
+			if(trains.arrivaldelay > 0) {
+			arrivalinfo = moment(trains.arrivalTimestampRaw).add(trains.arrivaldelay, 'm').format("HH:mm")
+			} else {
+			var arrivalinfo = trains.arrivalTimestamp;
+			};
+			if (trains.walkto != 0 ){
+			informationCell.innerHTML = "<i class=\"fa fa-walking\"></i>&nbsp;Ab&nbsp;" + trains.walkto + " (" + trains.walktime + "')&nbsp;&nbsp;" + "<i class=\"fa fa-clock\"></i> Ankunft " + moment(trains.arrivalTimestampRaw).add(trains.arrivaldelay, 'm').format("HH:mm");
+			informationCell.className = "align-left infozeile"; }
+			else {
+				informationCell.innerHTML = "<i class=\"fa fa-clock\"></i> Ankunft " + moment(trains.arrivalTimestampRaw).add(trains.arrivaldelay, 'm').format("HH:mm");
+			informationCell.className = "align-left infozeile"; }
+			informationrow.appendChild(informationCell);
+			table.appendChild(informationrow);
+
+
 
 			if (this.config.fade && this.config.fadePoint < 1) {
 				if (this.config.fadePoint < 0) {
@@ -182,8 +241,10 @@ Module.register("MMM-SwissCommute",{
 				if (t >= startingPoint) {
 					var currentStep = t - startingPoint;
 					row.style.opacity = 1 - (1 / steps * currentStep);
+					if (trains.walkto != 0) { informationrow.style.opacity = 1 - (1 / steps * currentStep); }
 				}
 			}
+
 		}
 
 		return table;
@@ -243,22 +304,59 @@ Module.register("MMM-SwissCommute",{
 	processData: function(data) {
 		this.trains = [];
 		this.message = "";
-		
 		if ('connections' in data) {
 			for (var i = 0, count = data.connections.length; i < count; i++) {
 				var trains = data.connections[i];
-
-				if("departure" in trains.legs[0] && "terminal" in trains.legs[0] && "line" in trains.legs[0]) {
+				{
+				if("Fussweg" != trains.legs[0].type_name && "departure" in trains.legs[0] && "terminal" in trains.legs[0] && "line" in trains.legs[0]) {
 					var conn = {
-						departureTimestampRaw: trains.departure,
-						departureTimestamp: moment(trains.departure).format("HH:mm"),
+						departureTimestampRaw: trains.legs[0].departure,
+						departureTimestamp: moment(trains.legs[0].departure).format("HH:mm"),
 						delay: parseInt(trains.dep_delay),
 						to: trains.legs[0].terminal,
 						type: trains.legs[0].type,
 						number: trains.legs[0].line,
-						track: trains.legs[0].track
-					};
-				
+						track: trains.legs[0].track,
+						information: trains.disruptions,
+						walkto: 0,
+						arrivalTimestampRaw: trains.arrival,
+						arrivalTimestamp: moment(trains.arrival).format("HH:mm"),
+						arrivaldelay: parseInt(trains.arr_delay)
+					} 
+					
+					} 
+					else if 
+					("departure" in trains.legs[1] && "terminal" in trains.legs[1] && "line" in trains.legs[1])
+					 {
+					var conn = {
+						departureTimestampRaw: trains.legs[1].departure,
+						departureTimestamp: moment(trains.legs[1].departure).format("HH:mm"),
+						delay: parseInt(trains.dep_delay),
+						to: trains.legs[1].terminal,
+						type: trains.legs[1].type,
+						number: trains.legs[1].line,
+						track: trains.legs[1].track,
+						information: trains.disruptions,
+						walktime: trains.legs[0].runningtime / 60,
+						walkto: trains.legs[0].terminal,
+						arrivalTimestampRaw: trains.arrival,
+						arrivalTimestamp: moment(trains.arrival).format("HH:mm"),
+						arrivaldelay: parseInt(trains.arr_delay)
+						
+					}} else 
+					{
+						Log.warn("Eine Verbindung übersprungen");
+						continue};
+				//	if (typeof conn.line != 'null') {
+			//			conn.number = conn.linedesc
+			//		}
+			//		else {
+			//			conn.number = conn.linedesc + conn.linedescn
+			//		}
+			
+
+					
+			
 					if (typeof conn.track != 'undefined') {
 						conn.trackChange = conn.track.indexOf("!") > 0;
 					}
@@ -266,13 +364,19 @@ Module.register("MMM-SwissCommute",{
 						conn.track = "";
 						conn.trackChange = 0;
 					}
+					if (typeof conn.information != 'undefined') {
+						conn.info = 1;
+					}
+					else {
+						conn.info = 0;
+					}
 								
 					this.trains.push(conn);
 				}
 			}
 		}
 		else {
-			this.message = data.messages[0];
+			this.message = "Derzeit keine Abfahrten";
 		}	
 
 		this.loaded = true;
