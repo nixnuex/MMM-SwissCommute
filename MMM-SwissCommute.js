@@ -57,7 +57,8 @@ Module.register("MMM-SwissCommute",{
 	
 	// Define required scripts.
 	getStyles: function() {
-		return ["MMM-SwissCommute.css", "font-awesome.css"];
+		return ["MMM-SwissCommute.css", "font-awesome.css", "icomoon.css"];
+        
 	},
 
 	// Define required scripts.
