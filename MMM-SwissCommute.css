@@ -15,9 +15,100 @@
 }
 
 .MMM-SwissCommute table {
-    width: 350px;
+    width: 450px;
+}
+.MMM-SwissCommute .infozeile {
+    font-size: 75%;
+}
+.MMM-SwissCommute .type {
+    width: 17.5%;
+}
+.MMM-SwissCommute .traintodist {
+    width: 5%;
+}
+.MMM-SwissCommute .departure {
+    width: 15%;
+}
+.MMM-SwissCommute .trainto {
+    width: 52.5%;
+}
+.MMM-SwissCommute .track {
+    width: 10%;
 }
 
 .MMM-SwissCommute .red {
     color: #FF0000
 }
+.MMM-SwissCommute .border {
+    border-radius: 10px;
+}
+
+.MMM-SwissCommute .linie106 {
+    color: #000;
+    background-color: #ffd700
+}
+.MMM-SwissCommute .linie107 {
+    color: #000;
+    background-color: #ffd700
+}
+.MMM-SwissCommute .linieS4 {
+    color: #fff;
+    background-color: #4eb7a0
+}
+.MMM-SwissCommute .linieS31 {
+    color: #fff;
+    background-color: #999a2d
+}
+.MMM-SwissCommute .linieS3 {
+    color: #fff;
+    background-color: #81639c
+}
+.MMM-SwissCommute .linieS8 {
+    color: #000;
+    background-color: #fff
+}
+.MMM-SwissCommute .linieS9 {
+    color: #fff;
+    background-color: #d92229
+}
+.MMM-SwissCommute .linieS7{
+    color: #fff;
+    background-color: #e47538
+}
+.MMM-SwissCommute .linie36{
+    color: #fff;
+    background-color: #4eb79f
+}
+.MMM-SwissCommute .linie34{
+    color: #fff;
+    background-color: #351610
+}
+.MMM-SwissCommute .linie30{
+    color: #fff;
+    background-color: #99acb3
+}
+.MMM-SwissCommute .linie19{
+    color: #fff;
+    background-color: #6a0d38
+}
+.MMM-SwissCommute .linie10{
+    color: #fff;
+    background-color: #009849
+}
+.MMM-SwissCommute .linie9{
+    color: #fff;
+    background-color: #f5bc25
+}
+.MMM-SwissCommute .linieRE{
+    color: #ff0000;
+    background-color: #fff
+}
+.MMM-SwissCommute .linie31{
+    color: #fff;
+    background-color: #8dd135
+}
+.MMM-SwissCommute .linie28{
+    color: #fff;
+    background-color: #96a020
+}
+
